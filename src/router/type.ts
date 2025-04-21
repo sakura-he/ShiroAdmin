@@ -1,31 +1,104 @@
 import "vue-router";
+import { RouteMeta } from "vue-router";
 export enum MenuEnum {
-    Catelog = 1, // 目录
-    Page, // 页面
-    Button, // 按钮
+    Catalog = "Catalog",
+    Page = "Page",
+    Button = "Button",
 }
-// 定义路由的元数据
+
+export enum PageTypeEnum {
+    Page = "PAGE",
+    Link = "LINK",
+    IFrame = "IFRAME",
+}
+
+export enum MenuStatusEnum {
+    Enable = "Enable",
+    Disable = "Disable",
+}
+export enum LayoutEnum {
+    LAYOUT_DEFAULT = "LAYOUT_DEFAULT",
+    LAYOUT_SIDE = "LAYOUT_SIDE",
+    LAYOUT_TOP = "LAYOUT_TOP",
+}
+// 公共字段
+interface BaseMeta  extends RouteMeta{
+    id: number;
+    pid: number | null;
+    description: string | null;
+    title: string;
+    permission: string;
+    icon?: string;
+    order?: number;
+    is_menu_visible: boolean;
+    status: MenuStatusEnum;
+    created_at?: Date;
+    updated_at?: Date;
+    [key: string]: any;
+}
+
+// Catalog 专属字段
+export interface CatalogMeta extends BaseMeta {
+    type: MenuEnum.Catalog;
+    path: string;
+    component_path: null;
+    layout?: undefined;
+    is_resident?: undefined;
+    is_cache?: undefined;
+    show_children: boolean;
+}
+
+// Page 专属字段
+export interface PageMeta extends BaseMeta {
+    type: MenuEnum.Page;
+    path: string;
+    component_path: string;
+    component_name: string;
+    layout: string;
+    page_type: PageTypeEnum;
+    is_resident: boolean;
+    is_cache: boolean;
+    is_tab_visible: boolean;
+}
+
+export interface ButtonMeta extends BaseMeta {
+    type: MenuEnum.Button;
+}
+// 联合类型
+export type StrictRouteMeta = CatalogMeta | PageMeta | ButtonMeta;
+// src/types/router-meta.d.ts
+
 declare module "vue-router" {
     interface RouteMeta {
-        // 名称,展示在菜单和tab上
+        // 基础字段
+        id?: number;
+        pid?: number | null;
+        description?: string | null;
         title?: string;
-        // 当前路由使用的布局,一般在定义路由中使用
-        layout?: string;
+        permission?: string;
+        icon?: string;
+        order?: number;
+        is_menu_visible?: boolean;
+        status?: MenuStatusEnum;
+        created_at?: Date;
+        updated_at?: Date;
+
+        // 菜单分类
         type?: MenuEnum;
-        // 权限数组
-        roles?: string[]; // 使用前端鉴权模式下有效
-        // 进入是否需要验证权限
-        requiresAuth: boolean; // Whether login is required to access the current page (every route must declare)
-        icon?: string; // 图标,也是菜单图标
-        hideInMenu?: boolean; // 在侧边菜单中中隐藏, 但是可以通过链接打开
-        hideChildrenInMenu?: boolean; // if set true, the children are not displayed in the side menu
-        order?: number; // Sort routing menu items. If set key, the higher the value, the more forward it is
-        noAffix?: boolean; // 如果为 true 则打开后不在 tab 中显示
-        residentTab?: boolean; // 是否默认常驻 tabs 中
-        noCancelResident?: boolean; // 如果为 true,则不允许取消常驻
-        ignoreCache?: boolean; //是否不缓存标签页,不缓存的标签页切换回来会重新加载
-        link?: boolean|string;  // 是否是链接形式
-        iframe?: boolean;  // 打开方式是否是 iframe, 需要同时设置 link 选项为 true
-        componentPath?:string;  // 定义路由时的componentName字段, 系统自动把componentName字段的值复制到此处,不要填写
+
+        // Page 专属字段
+        path?: string;
+        component_path?: string|null;
+        component_name?: string;
+        layout?: LayoutEnum | string;
+        page_type?: PageTypeEnum;
+        is_resident?: boolean;
+        is_cache?: boolean;
+        is_tab_visible?: boolean;
+        // Catalog 专属字段
+        show_children?: boolean;
+
+        // 其他字段兼容性兜底
+        [key: string]: any;
     }
 }

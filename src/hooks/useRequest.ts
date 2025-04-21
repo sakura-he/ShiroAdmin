@@ -19,8 +19,16 @@ type IRequestResult<TData, TParams extends Array<any>> = {
     data: Ref<TData | undefined>; // 当接口调用成功后,data的值为接口的返回值
 };
 
-export function useRequest<TData, TParams extends any[]>(fun: TApiFun<TData, TParams>, options?: IRequestOptions): IRequestResult<TData, TParams> {
-    const { loading: option_loading = false, onSuccess: option_onSuccess, onFail: option_onFail, pollingInterval: option_pollingInterval = 0 } = options || {};
+export function useRequest<TData, TParams extends any[]>(
+    fun: TApiFun<TData, TParams>,
+    options?: IRequestOptions,
+): IRequestResult<TData, TParams> {
+    const {
+        loading: option_loading = false,
+        onSuccess: option_onSuccess,
+        onFail: option_onFail,
+        pollingInterval: option_pollingInterval = 0,
+    } = options || {};
     let cancelPollingIntervalTimer: undefined | number = undefined;
     // 缓存的上次的参数
     let lastParams: TParams;
@@ -51,8 +59,12 @@ export function useRequest<TData, TParams extends any[]>(fun: TApiFun<TData, TPa
                 // 开启轮询
                 if (option_pollingInterval > 0 && !isPollingInterval.value) {
                     isPollingInterval.value = true;
-                    let _lastParams = lastParams instanceof Array ? lastParams : ([] as unknown as TParams);
-                    cancelPollingIntervalTimer = setInterval(() => run(..._lastParams), option_pollingInterval) as unknown as typeof cancelPollingIntervalTimer;
+                    let _lastParams =
+                        lastParams instanceof Array ? lastParams : ([] as unknown as TParams);
+                    cancelPollingIntervalTimer = setInterval(
+                        () => run(..._lastParams),
+                        option_pollingInterval,
+                    ) as unknown as typeof cancelPollingIntervalTimer;
                 }
             });
     };

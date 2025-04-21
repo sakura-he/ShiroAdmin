@@ -72,13 +72,13 @@ module.exports = {
 			'body-2': '13px',
 			'body-3': '14px',
 			'title-1': '16px',
-			'title-2': '20px',
-			'title-3': '24px',
+			'title-2': '18px',
+			'title-3': '22px',
 			'title-4': '28px',
-			'display-1': '36px',
-			'display-2': '48px',
-			'display-3': '56px',
-			'display-4': '76px'
+			'display-1': '30px',
+			'display-2': '42px',
+			'display-3': '48px',
+			'display-4': '56px'
 		},
 		screens: {
 			'sm': '576px',  // 大屏手机,隐藏侧边改弹出

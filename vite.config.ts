@@ -2,6 +2,8 @@ import { defineConfig,type PluginOption } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'node:path';
 import { visualizer } from "rollup-plugin-visualizer";
+import ViteMonacoPlugin from 'vite-plugin-monaco-editor-esm'
+
 // Arco组件自动引入
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
@@ -29,7 +31,8 @@ export default defineConfig({
 				})
 			]
 		}),
-		visualizer() as unknown as PluginOption
+		visualizer() as unknown as PluginOption,
+		ViteMonacoPlugin()
 	],
 	resolve: {
 		alias: {

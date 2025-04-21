@@ -45,10 +45,14 @@
 
             <div class="tw-flex tw-flex-wrap -tw-mx-1">
                 <!-- chart2 -->
-                <div class="chart2__chart tw-min-w-[300px] tw-mx-1 tw-flex-1 tw-h-[420px] tw-grow-[2]">
+                <div
+                    class="chart2__chart tw-min-w-[300px] tw-mx-1 tw-flex-1 tw-h-[420px] tw-grow-[2]"
+                >
                     <Chart1 v-if="showchart1" />
                 </div>
-                <div class="chart2__table tw-flex-col tw-flex tw-min-w-[300px] tw-h-[420px] tw-box-border tw-pl-2 tw-overflow-hidden tw-mx-1 tw-flex-1 tw-grow-[1]">
+                <div
+                    class="chart2__table tw-flex-col tw-flex tw-min-w-[300px] tw-h-[420px] tw-box-border tw-pl-2 tw-overflow-hidden tw-mx-1 tw-flex-1 tw-grow-[1]"
+                >
                     <span class="tw-flex-none tw-text-title-1 tw-pb-4">销售排名</span>
                     <a-table
                         class="tw-flex-1 tw-min-h-0"
@@ -109,107 +113,110 @@
 </template>
 
 <script setup lang="ts">
-import Chart1 from "./components/Chart1.vue";
-import Chart2 from "./components/Chart2.vue";
-import Char3 from "./components/Chart3.vue";
-import ChartSource from "./components/ChartSource.vue";
-import Statistic from "./components/TheStatistic.vue";
-enum chart2Type {
-    map = 1,
-    bar = 2,
-}
-let showchart1 = ref(false);
-setTimeout(() => {
-    showchart1.value = true;
-}, 1000);
-let chart2TypeValue = ref(chart2Type["map"]);
-const columns = [
-    {
-        title: "销售团队",
-        dataIndex: "name",
-    },
-    {
-        title: "销售金额",
-        dataIndex: "salary",
-    },
-    {
-        title: "备注",
-        dataIndex: "address",
-    },
-];
+    import Chart1 from "./components/Chart1.vue";
+    import Chart2 from "./components/Chart2.vue";
+    import Char3 from "./components/Chart3.vue";
+    import ChartSource from "./components/ChartSource.vue";
+    import Statistic from "./components/TheStatistic.vue";
+    defineOptions({
+        name: "Monitor",
+    });
+    enum chart2Type {
+        map = 1,
+        bar = 2,
+    }
+    let showchart1 = ref(false);
+    setTimeout(() => {
+        showchart1.value = true;
+    }, 1000);
+    let chart2TypeValue = ref(chart2Type["map"]);
+    const columns = [
+        {
+            title: "销售团队",
+            dataIndex: "name",
+        },
+        {
+            title: "销售金额",
+            dataIndex: "salary",
+        },
+        {
+            title: "备注",
+            dataIndex: "address",
+        },
+    ];
 
-const scroll = {
-    x: "100%",
-    y: "100%",
-};
+    const scroll = {
+        x: "100%",
+        y: "100%",
+    };
 
-const data = reactive([
-    {
-        key: "1",
-        name: "一组",
-        salary: 23000,
-        address: "卢萨卡交罚款善良的啊发射点发生为人情味",
-        email: "jane.doe@example.com",
-        expand: "Expand Content",
-    },
-    {
-        key: "2",
-        name: "二组",
-        salary: 25000,
-        address: "卢萨卡交罚款善良的啊发射点发生为人情味",
-        email: "alisa.ross@example.com",
-    },
-    {
-        key: "3",
-        name: "三组",
-        salary: 22000,
-        address: "卢萨卡交罚款善良的啊发射点发生为人情味",
-        email: "kevin.sandra@example.com",
-    },
-    {
-        key: "4",
-        name: "五组",
-        salary: 17000,
-        address: "卢萨卡交罚款善良的啊发射点发生为人情味",
-        email: "ed.hellen@example.com",
-    },
-    {
-        key: "5",
-        name: "四组",
-        salary: 27000,
-        address: "卢萨卡交罚款善良的啊发射点发生为人情味",
-        email: "william.smith@example.com",
-    },
-    {
-        key: "6",
-        name: "六组",
-        salary: 27000,
-        address: "卢萨卡交罚款善良的啊发射点发生为人情味",
-        email: "william.smith@example.com",
-    },
-    {
-        key: "7",
-        name: "九组",
-        salary: 27000,
-        address: "卢萨卡交罚款善良的啊发射点发生为人情味",
-        email: "william.smith@example.com",
-    },
-]);
+    const data = reactive([
+        {
+            key: "1",
+            name: "一组",
+            salary: 23000,
+            address: "卢萨卡交罚款善良的啊发射点发生为人情味",
+            email: "jane.doe@example.com",
+            expand: "Expand Content",
+        },
+        {
+            key: "2",
+            name: "二组",
+            salary: 25000,
+            address: "卢萨卡交罚款善良的啊发射点发生为人情味",
+            email: "alisa.ross@example.com",
+        },
+        {
+            key: "3",
+            name: "三组",
+            salary: 22000,
+            address: "卢萨卡交罚款善良的啊发射点发生为人情味",
+            email: "kevin.sandra@example.com",
+        },
+        {
+            key: "4",
+            name: "五组",
+            salary: 17000,
+            address: "卢萨卡交罚款善良的啊发射点发生为人情味",
+            email: "ed.hellen@example.com",
+        },
+        {
+            key: "5",
+            name: "四组",
+            salary: 27000,
+            address: "卢萨卡交罚款善良的啊发射点发生为人情味",
+            email: "william.smith@example.com",
+        },
+        {
+            key: "6",
+            name: "六组",
+            salary: 27000,
+            address: "卢萨卡交罚款善良的啊发射点发生为人情味",
+            email: "william.smith@example.com",
+        },
+        {
+            key: "7",
+            name: "九组",
+            salary: 27000,
+            address: "卢萨卡交罚款善良的啊发射点发生为人情味",
+            email: "william.smith@example.com",
+        },
+    ]);
 </script>
 
 <style scoped lang="scss">
-.page {
-    width: 100%;
-    box-sizing: border-box;
-    padding-bottom: 12px;
-}
-.custom-card > :deep(.arco-card-header) {
-    height: max-content !important;
-    padding-bottom: 0 !important;
-    border: none !important;
-}
-.custom-card > :deep(.arco-card-body) {
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
-}
+    .page {
+        width: 100%;
+        box-sizing: border-box;
+        padding-bottom: 12px;
+    }
+    .custom-card > :deep(.arco-card-header) {
+        height: max-content !important;
+        padding-bottom: 0 !important;
+        border: none !important;
+    }
+    .custom-card > :deep(.arco-card-body) {
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
 </style>

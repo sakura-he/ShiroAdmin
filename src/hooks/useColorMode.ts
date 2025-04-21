@@ -59,7 +59,7 @@ export default function useColorMode() {
         window.dispatchEvent(
             new CustomEvent("color-scheme-change", {
                 detail: { matches: matches },
-            })
+            }),
         );
     });
 

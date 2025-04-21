@@ -1,8 +1,8 @@
 // variable 样式应该在顶部，因为别的样式文件的样式可能会用到css变量
-@import './common.scss';
-@import './variable.scss';
-@import './global.scss';
-@import './transition/index.scss';
+@use 'common.scss';
+@use 'variable.scss';
+@use 'global.scss';
+@use 'transition/index.scss';
 
 @tailwind base;
 @tailwind components;

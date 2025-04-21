@@ -1,7 +1,13 @@
 import { Ref, ref } from "vue";
 type observable = HTMLElement;
 type observer = (entries: ResizeObserverEntry[]) => any;
-export default function useResizeObserver({ el, observer }: { el: observable | Ref<HTMLElement>; observer: observer }) {
+export default function useResizeObserver({
+    el,
+    observer,
+}: {
+    el: observable | Ref<HTMLElement>;
+    observer: observer;
+}) {
     let observable = ref<null | HTMLElement>(null);
     if (el instanceof HTMLElement) {
         observable.value = el;

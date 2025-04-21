@@ -1,6 +1,8 @@
 <!-- 顶部统计 -->
 <template>
-    <div class="header tw-mb-2 !tw-rounded-[4px] tw-grid tw-grid-cols-2 lg:tw-grid-cols-4 tw-grid-flow-row tw-gap-2">
+    <div
+        class="header tw-mb-2 !tw-rounded-[4px] tw-grid tw-grid-cols-2 lg:tw-grid-cols-4 tw-grid-flow-row tw-gap-2"
+    >
         <a-card
             v-loading="getMonitorSaleLoading"
             na-loading-text="加载中"
@@ -205,7 +207,9 @@
                         :percent="1 / item"
                     >
                         <template v-slot:text="scope">
-                            <span class="tw-text-body-3">{{ (scope.percent * 100).toFixed(1) }}%</span>
+                            <span class="tw-text-body-3">
+                                {{ (scope.percent * 100).toFixed(1) }}%
+                            </span>
                         </template>
                     </a-progress>
                 </div>
@@ -215,248 +219,273 @@
 </template>
 
 <script setup lang="ts">
-import NaChart from "@/components/NaChart.vue";
-import { getMonitorSale } from "@/api/monitor";
-import { BarChart, LineChart, MapChart } from "echarts/charts";
-import { DataZoomComponent, DatasetComponent, GeoComponent, GridComponent, TitleComponent, TooltipComponent, VisualMapComponent } from "echarts/components";
-import { use } from "echarts/core";
-import { CanvasRenderer, SVGRenderer } from "echarts/renderers";
-import VChart from "vue-echarts";
-import { getPresetPrimaryColors, previewColor } from "@/utils/themeColor";
-import useChartOption from "@/hooks/chart-option";
-import { useRequest } from "@/hooks/useRequest";
-import { useConfigStore } from "@/store";
-let { loading: getMonitorSaleLoading, run: getMonitorSaleRun } = useRequest(getMonitorSale);
-let renderChart = ref(false);
-nextTick(() => {
-    renderChart.value = true;
-});
-let configStore = useConfigStore();
-use([DataZoomComponent, SVGRenderer, GridComponent, TitleComponent, DatasetComponent, TooltipComponent, VisualMapComponent, GeoComponent, MapChart, CanvasRenderer, LineChart, BarChart]);
-let saleDateType = ref(1);
-let saleChartSource = ref([] as any[]);
-let saleOption = useChartOption((dark) => {
-    return {
-        color: dark ? Object.values(getPresetPrimaryColors(4).dark) : Object.values(getPresetPrimaryColors(4).light),
-        backgroundColor: "",
-        tooltip: {
-            className: "tooltip",
-        },
-        dataZoom: [
-            {
-                type: "inside",
+    import NaChart from "@/components/NaChart.vue";
+    import { getMonitorSale } from "@/api/monitor";
+    import { BarChart, LineChart, MapChart } from "echarts/charts";
+    import {
+        DataZoomComponent,
+        DatasetComponent,
+        GeoComponent,
+        GridComponent,
+        TitleComponent,
+        TooltipComponent,
+        VisualMapComponent,
+    } from "echarts/components";
+    import { use } from "echarts/core";
+    import { CanvasRenderer, SVGRenderer } from "echarts/renderers";
+    import VChart from "vue-echarts";
+    import { getPresetPrimaryColors, previewColor } from "@/utils/themeColor";
+    import useChartOption from "@/hooks/chart-option";
+    import { useRequest } from "@/hooks/useRequest";
+    import { useConfigStore } from "@/store";
+    let { loading: getMonitorSaleLoading, run: getMonitorSaleRun } = useRequest(getMonitorSale);
+    let renderChart = ref(false);
+    nextTick(() => {
+        renderChart.value = true;
+    });
+    let configStore = useConfigStore();
+    use([
+        DataZoomComponent,
+        SVGRenderer,
+        GridComponent,
+        TitleComponent,
+        DatasetComponent,
+        TooltipComponent,
+        VisualMapComponent,
+        GeoComponent,
+        MapChart,
+        CanvasRenderer,
+        LineChart,
+        BarChart,
+    ]);
+    let saleDateType = ref(1);
+    let saleChartSource = ref([] as any[]);
+    let saleOption = useChartOption((dark) => {
+        return {
+            color: dark
+                ? Object.values(getPresetPrimaryColors(4).dark)
+                : Object.values(getPresetPrimaryColors(4).light),
+            backgroundColor: "",
+            tooltip: {
+                className: "tooltip",
             },
-        ],
-        grid: {
-            top: 5,
-            bottom: 5,
-            left: 0,
-            right: 0,
-            containLabel: true,
-        },
-
-        dataset: {
-            dimensions: ["date", "value"],
-            source: saleChartSource.value,
-        },
-        xAxis: {
-            type: "category",
-            axisLabel: {
-                show: false,
-            },
-            axisLine: {
-                show: false,
-            },
-            axisTick: {
-                interval: 0,
-                inside: true,
-                length: 1,
-                lineStyle: {
-                    type: "dashed",
-                    opacity: 0.5,
+            dataZoom: [
+                {
+                    type: "inside",
                 },
+            ],
+            grid: {
+                top: 5,
+                bottom: 5,
+                left: 0,
+                right: 0,
+                containLabel: true,
             },
-            axisPointer: {
-                show: true,
-                type: "line",
-                label: {
+
+            dataset: {
+                dimensions: ["date", "value"],
+                source: saleChartSource.value,
+            },
+            xAxis: {
+                type: "category",
+                axisLabel: {
                     show: false,
-                    backgroundColor: "rgba(22, 93, 255,1)",
                 },
-            },
-        },
-        yAxis: {
-            type: "value",
-            axisLabel: {
-                show: false,
-            },
-            axisLine: {
-                show: false,
-            },
-            splitLine: {
-                show: false,
-                lineStyle: {
-                    type: "solid",
-                    opacity: 0.2,
+                axisLine: {
+                    show: false,
                 },
-            },
-        },
-
-        series: [
-            {
-                name: "截至时间",
-                type: "line",
-                smooth: 0.2,
-                emphasis: {
-                    label: {
-                        show: true,
-                        position: "bottom",
+                axisTick: {
+                    interval: 0,
+                    inside: true,
+                    length: 1,
+                    lineStyle: {
+                        type: "dashed",
+                        opacity: 0.5,
                     },
                 },
-                symbol: "none",
-
-                lineStyle: {
-                    color: previewColor(configStore.themeColor, dark)[6],
+                axisPointer: {
+                    show: true,
+                    type: "line",
+                    label: {
+                        show: false,
+                        backgroundColor: "rgba(22, 93, 255,1)",
+                    },
                 },
-                areaStyle: {
+            },
+            yAxis: {
+                type: "value",
+                axisLabel: {
+                    show: false,
+                },
+                axisLine: {
+                    show: false,
+                },
+                splitLine: {
+                    show: false,
+                    lineStyle: {
+                        type: "solid",
+                        opacity: 0.2,
+                    },
+                },
+            },
+
+            series: [
+                {
+                    name: "截至时间",
+                    type: "line",
+                    smooth: 0.2,
+                    emphasis: {
+                        label: {
+                            show: true,
+                            position: "bottom",
+                        },
+                    },
+                    symbol: "none",
+
+                    lineStyle: {
+                        color: previewColor(configStore.themeColor, dark)[6],
+                    },
+                    areaStyle: {
+                        color: previewColor(configStore.themeColor, dark)[5],
+                        opacity: 0.5,
+                    },
+                    selectedMode: false,
+                    universalTransition: true,
+                },
+            ],
+        };
+    });
+    let orderChartSource = ref([] as any[]);
+    let orderOption = useChartOption((dark) => {
+        return {
+            color: dark
+                ? Object.values(getPresetPrimaryColors(4).dark)
+                : Object.values(getPresetPrimaryColors(4).light),
+            backgroundColor: "",
+            dataZoom: [
+                {
+                    type: "inside",
+                },
+            ],
+            tooltip: {
+                className: "tooltip",
+            },
+            grid: {
+                top: 0,
+                bottom: 5,
+                left: 0,
+                right: 0,
+                containLabel: true,
+            },
+
+            dataset: {
+                dimensions: ["date", "value"],
+                source: orderChartSource.value,
+            },
+            xAxis: {
+                type: "category",
+                axisLabel: {
+                    show: false,
+                },
+                axisLine: {
+                    show: false,
+                },
+                axisTick: {
+                    show: false,
+                },
+                axisPointer: {
+                    show: true,
+                    type: "line",
+                    label: {
+                        show: false,
+                        backgroundColor: "rgba(22, 93, 255,1)",
+                    },
+                },
+            },
+            yAxis: {
+                type: "value",
+                axisLabel: {
+                    show: false,
+                },
+                axisLine: {
+                    show: false,
+                },
+                splitLine: {
+                    show: false,
+                    interval: 2,
+                    lineStyle: {
+                        type: "solid",
+                        opacity: 0.4,
+                    },
+                },
+            },
+            series: [
+                {
+                    name: "截至时间",
+                    type: "bar",
+                    emphasis: {
+                        label: {
+                            show: true,
+                        },
+                    },
+                    barWidth: "50%",
+                    selectedMode: false,
+                    itemStyle: {
+                        borderRadius: 2,
+                    },
                     color: previewColor(configStore.themeColor, dark)[5],
-                    opacity: 0.5,
                 },
-                selectedMode: false,
-                universalTransition: true,
-            },
-        ],
-    };
-});
-let orderChartSource = ref([] as any[]);
-let orderOption = useChartOption((dark) => {
-    return {
-        color: dark ? Object.values(getPresetPrimaryColors(4).dark) : Object.values(getPresetPrimaryColors(4).light),
-        backgroundColor: "",
-        dataZoom: [
-            {
-                type: "inside",
-            },
-        ],
-        tooltip: {
-            className: "tooltip",
-        },
-        grid: {
-            top: 0,
-            bottom: 5,
-            left: 0,
-            right: 0,
-            containLabel: true,
-        },
+            ],
+        };
+    });
+    onMounted(() => {
+        getMonitorSaleRun(1)
+            .then((res) => {
+                saleChartSource.value = res.data.chartData;
+                orderChartSource.value = res.data.chartData;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    });
 
-        dataset: {
-            dimensions: ["date", "value"],
-            source: orderChartSource.value,
-        },
-        xAxis: {
-            type: "category",
-            axisLabel: {
-                show: false,
-            },
-            axisLine: {
-                show: false,
-            },
-            axisTick: {
-                show: false,
-            },
-            axisPointer: {
-                show: true,
-                type: "line",
-                label: {
-                    show: false,
-                    backgroundColor: "rgba(22, 93, 255,1)",
-                },
-            },
-        },
-        yAxis: {
-            type: "value",
-            axisLabel: {
-                show: false,
-            },
-            axisLine: {
-                show: false,
-            },
-            splitLine: {
-                show: false,
-                interval: 2,
-                lineStyle: {
-                    type: "solid",
-                    opacity: 0.4,
-                },
-            },
-        },
-        series: [
-            {
-                name: "截至时间",
-                type: "bar",
-                emphasis: {
-                    label: {
-                        show: true,
-                    },
-                },
-                barWidth: "50%",
-                selectedMode: false,
-                itemStyle: {
-                    borderRadius: 2,
-                },
-                color: previewColor(configStore.themeColor, dark)[5],
-            },
-        ],
-    };
-});
-onMounted(() => {
-    getMonitorSaleRun(1)
-        .then((res) => {
-            saleChartSource.value = res.data.chartData;
-            orderChartSource.value = res.data.chartData;
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-});
-
-watch(saleDateType, () => {
-    getMonitorSaleRun(saleDateType.value)
-        .then((res) => {
-            saleChartSource.value = res.data.chartData;
-            orderChartSource.value = res.data.chartData;
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-});
+    watch(saleDateType, () => {
+        getMonitorSaleRun(saleDateType.value)
+            .then((res) => {
+                saleChartSource.value = res.data.chartData;
+                orderChartSource.value = res.data.chartData;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    });
 </script>
 
 <style scoped lang="scss">
-:deep(.tooltip) {
-    border-radius: 4px !important;
-    border: none !important;
-    background-color: var(--color-bg-opacity-2) !important;
-    backdrop-filter: blur(4px) !important;
-}
+    :deep(.tooltip) {
+        border-radius: 4px !important;
+        border: none !important;
+        background-color: var(--color-bg-opacity-2) !important;
+        backdrop-filter: blur(4px) !important;
+    }
 
-.custom-card > :deep(.arco-card-header) {
-    height: max-content !important;
-    padding-bottom: 0 !important;
-    border: none !important;
-}
+    .custom-card > :deep(.arco-card-header) {
+        height: max-content !important;
+        padding-bottom: 0 !important;
+        border: none !important;
+    }
 
-.custom-card > :deep(.arco-card-body) {
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
-}
+    .custom-card > :deep(.arco-card-body) {
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
 
-.custom-radios {
-    border-radius: 4px !important;
-}
+    .custom-radios {
+        border-radius: 4px !important;
+    }
 
-.custom-radios :deep(.arco-radio-button-content) {
-    padding-left: 4px !important;
-    padding-right: 4px !important;
-}
+    .custom-radios :deep(.arco-radio-button-content) {
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+    }
 </style>

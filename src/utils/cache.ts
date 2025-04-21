@@ -12,7 +12,7 @@ export default function createCache(prefix?: string) {
             localStorage.setItem(cacheKey, cacheValue);
         }
         // 获取缓存
-        getCache(key: string): any | null {
+        getCache(key: string):any | null {
             let cacheKey = `${this.prefix}${key}`.toUpperCase();
             let localStorageItem = localStorage.getItem(cacheKey);
             if (!localStorageItem) return null;
@@ -34,7 +34,7 @@ export default function createCache(prefix?: string) {
     return new Cache();
 }
 // 删除指定前缀的所有key,传入前缀删除指定的,不传入,删除所有没有前缀的
-export function removePrefix(prefix?: string) {
+export function removeStoreByPrefix(prefix?: string) {
     prefix = prefix ? prefix.toUpperCase() + "_" : "_";
     console.log("要删除的前缀为:", prefix);
     let keyLength = localStorage.length;

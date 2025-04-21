@@ -3,15 +3,15 @@ export interface ILoginData {
     username: string;
     password: string;
 }
-export function login({ username, password }: ILoginData) {
-    return request.post("/api/user/login", {
+export function loginApi({ username, password }: ILoginData) {
+    return request.post("/user/login", {
         username,
         password,
     });
 }
-export function getMenuList() {
-    return request.get("/api/user/menu");
+export function getMenuListApi() {
+    return request.get("/account/get_user_menus");
 }
-export function getUserInfo(token: string) {
+export function getUserInfoApi(token: string) {
     return request.post("/api/user/info", { token });
 }

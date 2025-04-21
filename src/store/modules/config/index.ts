@@ -1,42 +1,43 @@
-import createCache from "@/utils/cache";
 import defaultSetting from "@/config/setting.json";
 import useColorMode from "@/hooks/useColorMode";
-import { setThemeColor } from "@/utils/themeColor";
+import createCache from "@/utils/cache";
+import { setThemeColor as _setThemeColor } from "@/utils/themeColor";
 import { defineStore } from "pinia";
 import { ConfigStore, deviceEnum } from "./types";
 const STORE_ID = "config_store";
 let cache = createCache(STORE_ID);
 let { isDarkMode } = useColorMode();
-export const useConfigStore = defineStore({
-    id: STORE_ID,
-    state: (): ConfigStore => {
-        let config = cache.getCache("config") || defaultSetting;
-        setupInit(config);
-        return {
-            ...config,
-        };
-    },
-    actions: {
-        updateMenuWidth(width: number) {
-            this.menuWidth = width;
-        },
-        setDevice(device: deviceEnum) {
-            this.device = device;
-        },
-        setThemeColor(color: string) {
-            this.themeColor = color;
-            // 当配置对象的颜色改变后,
-            setThemeColor(color, isDarkMode.value);
-        },
-        updateColorWeek(value: boolean) {
-            this.colorWeak = value;
-            updateColorWeek(value);
-        },
-        updateTranslucent(value: boolean) {
-            this.translucent = value;
-            setTranslucent(value);
-        },
-    },
+export const useConfigStore = defineStore(STORE_ID, () => {
+    let _config = cache.getCache("config") || defaultSetting;
+    setupInit(_config);
+    let config = ref<ConfigStore>(_config);
+    function updateMenuWidth(width: number) {
+        config.value.menuWidth = width;
+    }
+    function setDevice(device: deviceEnum) {
+        config.value.device = device;
+    }
+    function setThemeColor(color: string) {
+        config.value.themeColor = color;
+        // 当配置对象的颜色改变后,
+        _setThemeColor(color, isDarkMode.value);
+    }
+    function updateColorWeek(value: boolean) {
+        config.value.colorWeak = value;
+        updateColorWeek(value);
+    }
+    function updateTranslucent(value: boolean) {
+        config.value.translucent = value;
+        setTranslucent(value);
+    }
+    return {
+        config,
+        updateMenuWidth,
+        setDevice,
+        setThemeColor,
+        updateColorWeek,
+        updateTranslucent,
+    };
 });
 
 type useConfigStoreType = typeof useConfigStore;
@@ -44,7 +45,7 @@ type useConfigStoreType = typeof useConfigStore;
 export function subscribeConfigStore(store: ReturnType<useConfigStoreType>) {
     store.$subscribe(
         (mutation, state) => {
-            cache.setCache("config", state);
+            cache.setCache("config", state.config);
         },
         { detached: true, immediate: true }
     );
@@ -53,11 +54,13 @@ function updateColorWeek(value: boolean) {
     document.documentElement.style.filter = value ? "invert(80%)" : "none";
 }
 function setTranslucent(value: boolean) {
-    value ? document.body.removeAttribute("not-translucent") : document.body.setAttribute("not-translucent", "");
+    value
+        ? document.body.removeAttribute("not-translucent")
+        : document.body.setAttribute("not-translucent", "");
 }
 function setupInit(config: ConfigStore) {
     // 初始化颜色
-    setThemeColor(config.themeColor, isDarkMode.value);
+    _setThemeColor(config.themeColor, isDarkMode.value);
     updateColorWeek(config.colorWeak);
     setTranslucent(config.translucent);
 }

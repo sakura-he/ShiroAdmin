@@ -1,6 +1,6 @@
-@import './fade.scss';
-@import './slide.scss';
-@import './zoom.scss';
+@use 'fade.scss';
+@use 'slide.scss';
+@use 'zoom.scss';
 
 .collapse-transition {
   transition: 0.2s height ease-in-out, 0.2s padding-top ease-in-out, 0.2s padding-bottom ease-in-out;

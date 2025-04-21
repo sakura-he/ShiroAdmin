@@ -1,8 +1,8 @@
+import LinkComponent from "@/layout/components/Link.vue";
+import { hasPermission } from "@/utils/permission";
+import NotMatchComponent from "@/views/exception/not-match-component/NotMatchComponent.vue";
 import { RouteRecordRaw, RouterView } from "vue-router";
-import { MenuEnum } from "../type";
-import { hasPermission } from '@/utils/permission'
-import LinkComponent from '@/layout/components/Link.vue'
-import NotMatchComponent from '@/views/exception/not-match-component/NotMatchComponent.vue' 
+import { MenuEnum, PageTypeEnum, StrictRouteMeta } from "../type";
 // 匹配views里面所有的.vue文件，动态引入
 const modules = import.meta.glob("/src/views/**/*.vue");
 // modules应该是一下结构的对象
@@ -15,67 +15,60 @@ export function getModulesKey() {
 /**
  * 整理路由配置对象(排序和鉴权)
  */
-export function sortAsyncRoutes<AsyncRoutes extends Array<any>>(asyncRoutes: AsyncRoutes): AsyncRoutes {
-    // 排序路由项
-    asyncRoutes.sort((a, b) => {
-        return (a?.meta?.order || 0) - (b?.meta?.order || 0)
-    });
+export function sortAsyncRoutes<AsyncRoutes extends Array<any>>(
+    asyncRoutes: AsyncRoutes
+): AsyncRoutes {
     // 过滤路由项
-    asyncRoutes = asyncRoutes.filter(route => {
+    asyncRoutes = asyncRoutes.filter((route) => {
         // 在菜单中排除没有权限的路由
         if (!hasPermission(route.meta.roles || [])) {
-            return false
+            return false;
         }
         if (route.children && route.children.length) {
             route.children = sortAsyncRoutes(route.children);
         }
-        return true
-    }) as AsyncRoutes
-    return asyncRoutes
+        return true;
+    }) as AsyncRoutes;
+    return asyncRoutes;
 }
-/**
- * 根据路由配置对象生成扁平化的路由记录并返回
- * @param asyncRoutes object 路由配置对象
- * @param parentPath string 父路由地址片段
- * @returns RouteRecordRaw[]
- */
-export function createAsyncRoutes(asyncRoutes: Array<any>, parentPath: string = "/"): RouteRecordRaw[] {
-    let routeRecords: any[] = [];
-    // 如果是单页,就返回单页,是目录,返回目录所有单页
-    asyncRoutes.forEach((route) => {
-        if (route.meta.type === MenuEnum["Catelog"]) {
-            routeRecords.push(...createAsyncRoutes(route.children, parentPath + route.path + "/"));
-        } else {
-            routeRecords.push(coverRoute(route, parentPath));
+
+// 扁平路由数据拼接父节点路径,先从祖先节点一层一层向下拼接,直到孙节点
+export function flatJoinPath(menus: Array<any>, parentPath: string = "", pid: number | null): any {
+    menus.forEach((menu) => {
+        // 寻找当前节点的父节点,并拼接父节点的路径
+        if (menu.pid === pid) {
+            menu.path = parentPath + menu.path;
+            // 再次寻找是否有把当前节点当成父节点的节点
+            flatJoinPath(menus, menu.path, menu.id);
         }
     });
-
-    return routeRecords;
 }
 
-// 将后台返回的路由数据中的一项转换成vueRouter支持的路由记录对象
-function coverRoute(asyncRoute: any, parentPath: string): RouteRecordRaw {
-    let routeRecordRaw: RouteRecordRaw = {
-        path: parentPath + asyncRoute.path,
-        name: asyncRoute.name || Symbol(asyncRoute.path), // symbol,唯一
-        meta: asyncRoute.meta || {},
-        component: <any>null,
-    };
-    routeRecordRaw.meta!.componentPath = asyncRoute.component; 
-    // 如果当前路由配置对象是一个目录,则组件为viewrouter
-    if (asyncRoute.meta.type === MenuEnum["Catelog"] && asyncRoute.children && asyncRoute.children.length) {
-        routeRecordRaw.component = RouterView;
-    } else if (routeRecordRaw.meta?.link && routeRecordRaw.meta?.iframe) {
-        // 内嵌iframe 不返回任何组件
-    } else if (routeRecordRaw.meta?.link) {
-        // 外部打开
-        routeRecordRaw.component = LinkComponent
-    } else {
-        // 不是目录,去views目录中寻找对应的vue页面
-        routeRecordRaw.component = loadComponent4String(asyncRoute.component);
-    }
-    return routeRecordRaw;
+export function coverRoute(menus: StrictRouteMeta[]): RouteRecordRaw[] {
+    return menus
+        .filter((menu) => menu.type !== MenuEnum.Button) // 过滤掉按钮类型的菜单
+        .map((menu) => {
+            const routeRecordRaw: RouteRecordRaw = {
+                path: menu.path,
+                name: menu.title || Symbol(menu.path ?? ""), // 加 null 合法保护
+                meta: menu,
+                component: null as any,
+            };
+            if (menu.type === MenuEnum.Catalog) {
+                routeRecordRaw.component = RouterView;
+            } else if (menu.type === MenuEnum.Page) {
+                if (menu.page_type === PageTypeEnum.IFrame) {
+                    // IFrame 不处理组件
+                } else if (menu.page_type === PageTypeEnum.Link) {
+                    routeRecordRaw.component = LinkComponent;
+                } else {
+                    routeRecordRaw.component = loadComponent4String(menu.component_path!);
+                }
+            }
+            return routeRecordRaw;
+        });
 }
+
 // 根据后端的路由配置components字段值,动态加载import.meta.glob中的动态组件
 export function loadComponent4String(component: string) {
     try {
@@ -84,7 +77,8 @@ export function loadComponent4String(component: string) {
             return key.includes(`${component}.vue`);
         });
         if (findComponentPath) {
-            return modules[findComponentPath];
+            let mo = modules[findComponentPath];
+            return mo;
         }
         throw Error(`找不到组件${component}，请确保组件路径正确`);
     } catch (error) {
@@ -96,7 +90,7 @@ export function loadComponent4String(component: string) {
 export function firstRoute(routes: RouteRecordRaw[]): RouteRecordRaw | undefined {
     for (const route of routes) {
         // 判断当前路由记录是不是个目录,是的话,尝试在路由记录的chlidren记录中寻找
-        if (route.meta?.type === MenuEnum["Catelog"] && route.children) {
+        if (route.meta?.type === MenuEnum["Catalog"] && route.children) {
             let children = firstRoute(route.children);
             if (children) {
                 return children;

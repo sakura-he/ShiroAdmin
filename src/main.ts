@@ -1,7 +1,7 @@
 import "@/api";
 import setupMock from "@/mock";
 import { router } from "@/router/index";
-import { Message } from "@arco-design/web-vue";
+import { default as ArcoVue, Message } from "@arco-design/web-vue";
 import { createApp } from "vue";
 import App from "./App.vue";
 import { pinia } from "./store";
@@ -17,6 +17,7 @@ async function bootstrap() {
     Message._context = app._context;
     app.use(router);
     app.use(pinia);
+    app.use(ArcoVue);
     app.use(ArcoVueIcon);
     // 安装全局指令
     setupGlobalDirectives(app);
@@ -24,6 +25,5 @@ async function bootstrap() {
     setupMock();
     await router.isReady();
     app.mount("#app");
-    
 }
 bootstrap();

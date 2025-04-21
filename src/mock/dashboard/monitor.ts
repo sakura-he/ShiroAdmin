@@ -52,7 +52,9 @@ let setup = () => {
         }
         let chartData: Array<Record<string, any>> = [];
         var url = new URL(options.url);
-        let reqDateType: dateTypeEnum = Number.parseInt(url.searchParams.get("type") || dateTypeEnum["day"].toString());
+        let reqDateType: dateTypeEnum = Number.parseInt(
+            url.searchParams.get("type") || dateTypeEnum["day"].toString(),
+        );
         switch (reqDateType) {
             case dateTypeEnum["day"]:
                 for (let index = 0; index <= dayjs().hour(); index++) {

@@ -39,10 +39,12 @@ export function getPresetPrimaryColors(index: number): primaryColorType {
         light: {},
     } as primaryColorType;
     Object.keys(presetColos.dark).forEach((color) => {
-        primaryColor.dark[color as keyof primaryColorType["dark"]] = presetColos.dark[color as keyof primaryColorType["dark"]][index];
+        primaryColor.dark[color as keyof primaryColorType["dark"]] =
+            presetColos.dark[color as keyof primaryColorType["dark"]][index];
     });
     Object.keys(presetColos.dark).forEach((color) => {
-        primaryColor.light[color as keyof primaryColorType["light"]] = presetColos.light[color as keyof primaryColorType["light"]][index];
+        primaryColor.light[color as keyof primaryColorType["light"]] =
+            presetColos.light[color as keyof primaryColorType["light"]][index];
     });
     return primaryColor;
 }

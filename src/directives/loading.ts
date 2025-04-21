@@ -1,7 +1,7 @@
-import { App, Directive, h, DirectiveBinding, VNode, defineComponent } from "vue";
-export const DIRECTIVE_NAME = "loading";
-import loadingStyles from "./loading/style.module.css";
+import { App, Directive, DirectiveBinding, VNode } from "vue";
 import { createLoadingInstance } from "./loading/loading";
+import loadingStyles from "./loading/style.module.css";
+export const DIRECTIVE_NAME = "loading";
 interface ILoadingElement extends HTMLElement {
     $loading: Record<string, any>;
 }
@@ -10,7 +10,7 @@ function hasPosition(el: HTMLElement) {
     return elStyle.position !== "static";
 }
 function createLoadingElement(el: ILoadingElement, binding: DirectiveBinding, vnode: VNode) {
-    console.log(binding.value);
+   
     let isLoading = binding.value;
     let oldIsLoading = binding.oldValue;
     if (isLoading !== oldIsLoading) {
@@ -40,7 +40,7 @@ function createLoadingElement(el: ILoadingElement, binding: DirectiveBinding, vn
 }
 export const directive: Directive = {
     mounted(el: HTMLElement, binding, vnode) {
-        console.log(vnode);
+       
         createLoadingElement(el as ILoadingElement, binding, vnode);
     },
     updated(el: HTMLElement, binding, vnode) {

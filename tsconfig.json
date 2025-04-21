@@ -11,7 +11,7 @@
 		"isolatedModules": true,
 		"esModuleInterop": true,
 		"allowJs": true,
-
+		"jsxImportSource": "vue",
 		"lib": [
 			"ESNext",
 			"DOM"
@@ -24,7 +24,9 @@
 			]
 		}
 	},
+ 
 	"include": [
+		"src/*.ts",
 		"src/**/*.ts",
 		"src/**/*.d.ts",
 		"src/**/*.tsx",
@@ -32,6 +34,7 @@
 		"./auto-imports.d.ts",
 		"./components.d.ts",
 		"./module.d.ts",
+		"src/router.ts",
 		"src/layout/components/Menu/index.jsx"
 	],
 	"references": [

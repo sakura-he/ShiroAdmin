@@ -3,14 +3,12 @@
 </template>
 
 <script lang="ts">
-export default {
-    name: "default",
-};
+    export default {
+        name: LayoutEnum.LAYOUT_DEFAULT,
+    };
 </script>
 
 <script lang="ts" setup>
-import { defineComponent } from "vue";
-
-console.log("this.age");
+    import { LayoutEnum } from "@/router/type";
 </script>
 <style lang="scss"></style>

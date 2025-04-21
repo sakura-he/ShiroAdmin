@@ -1,34 +1,26 @@
 <script lang="tsx">
-import { h, resolveComponent, VNode } from "vue";
-export default defineComponent({
-    props: {
-        icon: {
-            type: String,
-            required: false,
+    import { h, resolveComponent, VNode } from "vue";
+
+    export default defineComponent({
+        props: {
+            icon: {
+                type: String,
+                required: false,
+            },
         },
-        backupIcon: {
-            type: String,
-            required: false,
+        setup(props) {
+            let iconComp: ReturnType<typeof resolveComponent>;
+            return () => {
+                if (props.icon) {
+                    iconComp = resolveComponent(props.icon);
+                    if (typeof iconComp !== "string") return h(iconComp);
+                }
+
+                console.error(`图标组件不存在: ${props.icon}`);
+                // 这里可以返回一个默认的图标组件
+                // 例如一个问号图标
+                return <icon-question-circle-fill style="color:rgb(240,104,92)" />;
+            };
         },
-    },
-    setup(props) {
-        let iconComp: ReturnType<typeof resolveComponent>;
-        return () => {
-            if (!(props.icon || props.backupIcon)) {
-                return null;
-            }
-            if (props.icon) {
-                iconComp = resolveComponent(props.icon);
-                if (typeof iconComp !== "string") return h(iconComp);
-            }
-            if (props.backupIcon) {
-                iconComp = resolveComponent(props.backupIcon);
-                if (typeof iconComp !== "string") return h(iconComp);
-                // 没找到图标组件和备用图标组件,返回空白页面图标
-                else return h(resolveComponent("icon-file"));
-            }
-            return null;
-        };
-    },
-});
+    });
 </script>

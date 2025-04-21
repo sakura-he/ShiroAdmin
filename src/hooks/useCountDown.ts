@@ -1,12 +1,12 @@
 // 倒计时hooks
-import { ref, Ref } from 'vue';
+import { ref, Ref } from "vue";
 interface IOption {
     interval: number;
     end: number;
 }
 interface IHookReturnType {
     count: Ref<number>;
-    start: (start:number) => void;
+    start: (start: number) => void;
     setCount: (value: number) => void;
     reset: () => void;
 }
@@ -15,12 +15,12 @@ export function useCountDown(option: IOption): IHookReturnType {
     option = option || { interval: 1000, end: 0 };
     let count = ref(option.end);
     let timer: ReturnType<typeof setInterval> | undefined = undefined;
-    function start(value:number) {
-        console.log(value)
+    function start(value: number) {
+      
         if (timer) {
-            return
+            return;
         } else {
-            count.value = value;  // 设置初始值
+            count.value = value; // 设置初始值
             timer = setInterval(() => {
                 count.value--;
                 if (count.value <= option.end) {
@@ -28,7 +28,7 @@ export function useCountDown(option: IOption): IHookReturnType {
                     clearInterval(timer);
                     timer = undefined;
                 }
-            }, option.interval)
+            }, option.interval);
         }
     }
     function reset() {
@@ -40,6 +40,9 @@ export function useCountDown(option: IOption): IHookReturnType {
         count.value = value;
     }
     return {
-        count, start, reset, setCount
-    }
+        count,
+        start,
+        reset,
+        setCount,
+    };
 }
