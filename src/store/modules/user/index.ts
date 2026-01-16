@@ -1,4 +1,4 @@
-import { accountLoginByPasswordAPi, getAccountInfoApi } from "@/api/account";
+import { accountLoginByPasswordApi, getAccountInfoApi } from "@/api/account";
 import { ILoginData } from "@/api/user";
 import { router } from "@/router";
 import { LOGIN } from "@/router/routes/constant";
@@ -21,7 +21,7 @@ export const useUserStore = defineStore(STORE_ID, () => {
 
     async function login(loginData: ILoginData) {
         try {
-            const res = await accountLoginByPasswordAPi(loginData);
+            const res = await accountLoginByPasswordApi(loginData);
             token.value = res.data.token;
             await getUserInfo();
         } catch (error) {

@@ -148,7 +148,7 @@ import {
     UpdateUserFormDto,
     UserDetailFormDto,
     UserEnumApi,
-} from "@/api/user2";
+} from "@/api/user";
 import { NaFormInputItem } from "@/components/NaForm";
 import NaPageHeader from "@/components/NaPageHeader.vue";
 import useNaTable from "@/components/NaTable/useNaTable";

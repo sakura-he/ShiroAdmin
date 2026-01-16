@@ -1,32 +1,67 @@
 import { request } from "./index";
+import type {
+  LoginParams,
+  RequestResetParams,
+  VerifyResetParams,
+  ResetPasswordParams,
+  ChangePasswordParams,
+} from "./schemas/account.schema";
 
-export function getAccountMenuListAou() {
-    return request("/account/get_user_menus", {
-        method: "get",
-    });
+// 获取用户菜单列表
+export function getAccountMenuListApi() {
+  return request("/account/menus", {
+    method: "get",
+  });
 }
-export function accountLoginByPasswordAPi(data: {username: string, password: string}) {
-    return request("/account/login", {
-        method: "post",
-        data,
-    });
+
+// 账户密码登录
+export function accountLoginByPasswordApi(data: LoginParams) {
+  return request("/account/login", {
+    method: "post",
+    data,
+  });
 }
+
+// 获取账户信息
 export function getAccountInfoApi() {
-    return request({
-        url: "/account/get_account_info",
-        method: "get",
-    });
-}
-export function getSystemDemoTable() {
-    return request("/api/system/demoTable", {
-        method: "get",
-    });
+  return request({
+    url: "/account/info",
+    method: "get",
+  });
 }
 
-export function createMenu(data: any) {
-    return request({
-        url: "/menu/create_menu",
-        method: "post",
-        data,
-    });
+// 请求密码重置（发送重置邮件）
+export function requestPasswordResetApi(data: RequestResetParams) {
+  return request({
+    url: "/account/request_reset",
+    method: "post",
+    data,
+  });
+}
+
+// 验证重置 token
+export function verifyResetTokenApi(data: VerifyResetParams) {
+  return request({
+    url: "/account/verify_reset",
+    method: "post",
+    data,
+  });
+}
+
+// 重置密码（使用 token）
+export function resetPasswordApi(data: ResetPasswordParams) {
+  return request({
+    url: "/account/reset_password",
+    method: "post",
+    data,
+  });
+}
+
+// 修改密码（已登录用户）
+export function changePasswordApi(data: ChangePasswordParams) {
+  return request({
+    url: "/account/change_password",
+    method: "post",
+    data,
+  });
 }

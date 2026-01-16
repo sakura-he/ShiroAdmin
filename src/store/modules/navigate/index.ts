@@ -1,4 +1,4 @@
-import { getMenuListApi } from "@/api/user";
+import { getAccountMenuListApi } from "@/api/account";
 import { router } from "@/router";
 import { coverRoute, firstRoute } from "@/router/routes";
 import { NOT_FOUND_ROUTE } from "@/router/routes/base";
@@ -30,7 +30,7 @@ export const useNavigateStore = defineStore(STORE_ID, () => {
     const getAsyncMenu = async () => {
         try {
             let multipleStore = useMultipleTabs();
-            const res = await getMenuListApi();
+            const res = await getAccountMenuListApi();
             let asyncMenuListRes = res.data;
             // 排序,拼接完整路由路径
             asyncMenuListRes = flatOrder(asyncMenuListRes, {

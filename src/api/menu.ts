@@ -25,3 +25,10 @@ export function createMenu(data: any) {
         data,
     });
 }
+export function deleteMenu(id: number) {
+    return request({
+        url: "/menu/delete_menu",
+        method: "post",
+        data: { menu_id: id },
+    });
+}
